@@ -1,0 +1,17 @@
+body {
+    background-color: whitesmoke;
+}
+
+.container {
+    max-width: 700px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+h4, img {
+    display: inline-block;
+}
+
+h2, hr {
+    display: block;
+}
