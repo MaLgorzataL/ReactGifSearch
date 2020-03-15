@@ -4,11 +4,18 @@ var styles = {
   margin: '0.5em'
 };
 
-Gif = React.createClass({
-  getUrl: function() {
+class Gif extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.getUrl = this.getUrl.bind(this);
+  }
+
+  getUrl() {
     return this.props.sourceUrl || GIPHY_LOADING_URL;
-  },
-  render: function() {
+  }
+
+  render() {
     var url = this.props.loading ? GIPHY_LOADING_URL : this.props.url;
 
     return (
@@ -18,14 +25,5 @@ Gif = React.createClass({
         </a>
       </div>
     );
-  },
-
-  getInitialState() {
-    return {
-        loading: false,
-        searchingText: '',
-        gif: {}
-    };
-},
-
-});
+  } 
+};
