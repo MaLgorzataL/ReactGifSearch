@@ -14,35 +14,45 @@ class App extends React.Component {
      this.getGif = this.getGif.bind(this);
     }
 
-    getGif(searchingText, callback) {  // 1.
-      let url = GIPHY_API_URL + '/v1/gifs/random?api_key=' + GIPHY_PUB_KEY + '&tag=' + searchingText;  // 2.
-      let xhr = new XMLHttpRequest();  // 3.
-      xhr.open('GET', url);
-      xhr.onload = function() {
-          if (xhr.status === 200) {
-             let data = JSON.parse(xhr.responseText).data; // 4.
+    getGif(searchingText) { // 1.
+      return new Promise(
+        function(resolve, reject) {
+          let url = GIPHY_API_URL + '/v1/gifs/random?api_key=' + GIPHY_PUB_KEY + '&tag=' + searchingText;  // 2.
+          let xhr = new XMLHttpRequest();  // 3.
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              let data = JSON.parse(xhr.responseText).data; // 4.
               let gif = {  // 5.
-                  url: data.fixed_width_downsampled_url,
-                  sourceUrl: data.url,
+                url: data.fixed_width_downsampled_url,
+                sourceUrl: data.url
               };
-              callback(gif);  // 6.
-          }
-      };
-      xhr.send();
+             resolve(gif); // Sukces
+            } else {
+              reject(new Error(this.statusText)); // Dostaliśmy odpowiedź, ale jest to np 404
+            }
+          };
+          xhr.onerror = function() {
+            reject(new Error(
+            `XMLHttpRequest Error: ${this.statusText}`));
+          };
+          xhr.open('GET', url);
+          xhr.send();
+        }
+      );
   }
 
   handleSearch(searchingText) {  // 1.
     this.setState({
-      loading: true  // 2.
+      loading: true,  // 2.
+      searchingText: searchingText  
     });
-    this.getGif(searchingText, function(gif) {  // 3.
-      this.setState({  // 4
-        loading: false,  // a
-        gif: gif,  // b
-        searchingText: searchingText  // c
-      });
-    }.bind(this));
-  }
+    this.getGif(searchingText)  // 3.
+      .then(response => this.setState({
+        loading: false,  // 2.
+        gif: response
+      }))
+      .catch(error => console.error('Something went wrong ', error));
+  };
 
   render() {
 

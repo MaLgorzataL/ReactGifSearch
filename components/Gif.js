@@ -12,7 +12,7 @@ class Gif extends React.Component {
   }
 
   getUrl() {
-    return this.props.sourceUrl || GIPHY_LOADING_URL;
+    return this.props.sourceUrl || GIPHY_LOADING_URL;  
   }
 
   render() {
